@@ -6,7 +6,9 @@
 
 (defn input-start [params]
   (condp = (params :event)
-    KeyEvent/VK_SPACE (reset! (params :state) :world)
+    KeyEvent/VK_SPACE 
+    (do (reset! (params :state) :world)
+      (reset! (params :player) (Test.game/make-player)))
     nil))
 
 (defn valid-position? [game-map x y]
@@ -37,7 +39,9 @@
 
 (defn input-world [params]
   (condp = (params :event) 
-    KeyEvent/VK_SPACE (reset! (params :state) :battle)
+    KeyEvent/VK_SPACE 
+    (do (reset! (params :state) :battle)
+      (reset! (params :enemy) (Test.game/make-enemy (params :enemies :spawns))))
     KeyEvent/VK_UP (try-move! params 0 -1)
     KeyEvent/VK_DOWN (try-move! params 0 1)
     KeyEvent/VK_LEFT (try-move! params -1 0)
@@ -47,9 +51,7 @@
 (defn input-battle [params]
   (condp = (params :event)
     KeyEvent/VK_SPACE 
-    (do (reset! (params :enemy) (Test.game/make-enemy))
-      (reset! (params :player) (Test.game/make-player))
-      (reset! (params :state) :start))
+    (reset! (params :state) :start)
     KeyEvent/VK_A (do (swap! (params :enemy) (fn [en] (update-in en [:hp] - (get-in @(params :player) [:stats :atk]))))
                     (if (> (@(params :enemy) :hp) 0) 
                       (swap! (params :player) (fn [pl] (update-in pl [:stats :hp]  - (@(params :enemy) :atk))))))
@@ -57,12 +59,9 @@
     nil)
   (cond 
     (< (get-in @(params :player) [:stats :hp]) 1) 
-    (do (reset! (params :enemy) (Test.game/make-enemy))
-      (reset! (params :player) (Test.game/make-player))
-      (reset! (params :state) :start))
+    (reset! (params :state) :start)
     (< (@(params :enemy) :hp) 1) 
-    (do (reset! (params :enemy) (Test.game/make-enemy))
-      (reset! (params :state) :world)
+    (do (reset! (params :state) :world)
       (swap! (params :player) (fn [pl] (update-in pl [:kills] inc))))))
 
 (defn input [params]

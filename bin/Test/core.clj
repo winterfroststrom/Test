@@ -19,9 +19,12 @@
 
 (def state (atom :start))
 
-(def player (atom (make-player)))
+(def player (atom nil))
+(def enemy (atom nil))
 
-(def enemy (atom (make-enemy)))
+(def game-map (atom nil))
+(def enemy-table (atom nil))
+(def spawns (atom nil))
 
 (comment
 (def tiles (letfn [t (fn [_] true)
@@ -40,8 +43,6 @@
         6 (swap! game-map (fn [m] (assoc-in m [y x] 5)))
 )
 
-(def game-map (atom nil))
-
 (defn create-panel []
   (doto (proxy [JPanel] []
           (paint [^Graphics2D g] (render ^Graphics2D g @state @game-map @player @enemy)))
@@ -54,7 +55,9 @@
                          :state state
                          :game-map game-map 
                          :player player
-                         :enemy enemy}))))
+                         :enemy enemy
+                         :enemies enemy-table
+                         :spawns spawns}))))
 
 (defn create-frame []
   (doto (new JFrame) 
@@ -72,11 +75,12 @@
 
 (defn -main [& args]
   (do
-    (reset! game-map (read-string (slurp "resources/game_map1.txt")))
-    (reset! panel (create-panel))
-    (reset! ka (create-key-adapter))
-    (reset! frame (create-frame))
-    (send-off animator animation)))
+    (let [file1 (read-string (slurp "resources/game_map1.txt"))]
+      (reset! game-map (file1 :tiles))
+      (reset! panel (create-panel))
+      (reset! ka (create-key-adapter))
+      (reset! frame (create-frame))
+      (send-off animator animation))))
 
 (comment
   (-main)
@@ -114,6 +118,10 @@
   (str (.getName (new java.io.File "resources")) "/" "blubber.txt")
   
   (.delete (new java.io.File "resources"))
+
+(meta (eval (read-string (let [a (with-meta { :e 2} {:type 3})]
+  (str "(with-meta " (str a) (str (meta a)) ")")))))
+
   
   (def running true)
   
