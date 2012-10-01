@@ -5,9 +5,10 @@
 
 
 (defn make-player []
-  {:position {:x 2 :y 2} 
-   :kills 0
-   :stats {:hp 10 :atk 2 :name :player}})
+  (read-string (slurp "resources/save1.txt")))
+
+(defn save-player [params]
+  (spit "resources/save1.txt" (str @(params :player))))
 
 (defmulti make-enemy (fn [table spawns] (type-dispatch spawns)))
 

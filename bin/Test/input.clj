@@ -11,7 +11,8 @@
 
 (defn input-world [params]
   (condp = (params :event) 
-    KeyEvent/VK_SPACE (game/init-battle! params) 
+    KeyEvent/VK_SPACE (game/init-battle! params)
+    KeyEvent/VK_S (game/save-player params)
     KeyEvent/VK_UP (game/try-move! params 0 -1)
     KeyEvent/VK_DOWN (game/try-move! params 0 1)
     KeyEvent/VK_LEFT (game/try-move! params -1 0)
