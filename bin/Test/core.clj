@@ -1,5 +1,5 @@
 (ns Test.core
-  (:import [javax.swing JFrame JPanel]
+  (:import [javax.swing JFrame JPanel SwingUtilities]
            [java.awt Dimension Color Graphics Graphics2D]
            [java.awt.event KeyAdapter KeyEvent])
   (:use [Test.render]
@@ -14,12 +14,13 @@
 (def frame (atom nil))
 (def animator (agent nil))
 
-(def running true)
+(def running (atom true))
 (def time-delta 50)
 
 (def player (ref nil))
 (def enemy (ref nil))
 (def state (ref :start))
+(def tile-types (ref nil))
 (def game-map (ref nil))
 (def enemies (ref nil))
 (def spawns (ref nil))
@@ -38,6 +39,7 @@
                          :player player
                          :enemy enemy
                          :enemies enemies
+                         :tile-types tile-types
                          :spawns spawns}))))
 
 (defn create-frame []
@@ -48,7 +50,7 @@
     .pack .show))
 
 (defn animation [_]
-  (when running
+  (when @running
     (send-off *agent* #'animation))
   (.repaint ^JPanel @panel)
   (Thread/sleep time-delta)
@@ -57,7 +59,7 @@
 (defn -main [& args]
   (reset! panel (create-panel))
   (reset! ka (create-key-adapter))
-  (reset! frame (create-frame))
+  (reset! frame (SwingUtilities/invokeLater create-frame))
   (send-off animator animation))
 
 (comment
@@ -101,8 +103,8 @@
   (str "(with-meta " (str a) (str (meta a)) ")")))))
 
   
-  (def running true)
+  (reset! @running true)
   
-  (def running false)
+  (reset! @running false)
   
 )
