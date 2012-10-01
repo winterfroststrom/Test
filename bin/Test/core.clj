@@ -17,31 +17,12 @@
 (def running true)
 (def time-delta 50)
 
-(def state (atom :start))
-
-(def player (atom nil))
-(def enemy (atom nil))
-
-(def game-map (atom nil))
-(def enemy-table (atom nil))
-(def spawns (atom nil))
-
-(comment
-(def tiles (letfn [t (fn [_] true)
-                 f (fn [_] false)] 
-             [[t t]
-              [f f]
-              [t t]
-              [t ]
-              [t ]
-              [t ]
-              [t ]]))
-
-        3 (swap! p move-to 1 2)
-        4 (swap! p move-to 13 7)
-        5 (swap! game-map (fn [m] (assoc-in m [y x] 6)))
-        6 (swap! game-map (fn [m] (assoc-in m [y x] 5)))
-)
+(def player (ref nil))
+(def enemy (ref nil))
+(def state (ref :start))
+(def game-map (ref nil))
+(def enemies (ref nil))
+(def spawns (ref nil))
 
 (defn create-panel []
   (doto (proxy [JPanel] []
@@ -56,7 +37,7 @@
                          :game-map game-map 
                          :player player
                          :enemy enemy
-                         :enemies enemy-table
+                         :enemies enemies
                          :spawns spawns}))))
 
 (defn create-frame []
@@ -74,13 +55,10 @@
   nil)
 
 (defn -main [& args]
-  (do
-    (let [file1 (read-string (slurp "resources/game_map1.txt"))]
-      (reset! game-map (file1 :tiles))
-      (reset! panel (create-panel))
-      (reset! ka (create-key-adapter))
-      (reset! frame (create-frame))
-      (send-off animator animation))))
+  (reset! panel (create-panel))
+  (reset! ka (create-key-adapter))
+  (reset! frame (create-frame))
+  (send-off animator animation))
 
 (comment
   (-main)

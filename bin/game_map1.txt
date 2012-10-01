@@ -1,8 +1,8 @@
-{:enemy-table
+{:enemies
 [{:hp 2 :atk 1 :name :enemy1}
 {:hp 4 :atk 1 :name :enemy2}]
 
-:enemy-spawn
+:spawns
 {:type :probabilities :probabilities [0.8 0.2]}
 
 :tiles
