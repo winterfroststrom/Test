@@ -1,0 +1,1 @@
+{:position {:x 13, :y 2}, :kills 4, :stats {:hp 100.0, :atk 2, :name :player}, :map :game_map1}

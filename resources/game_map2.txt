@@ -1,0 +1,25 @@
+{
+:enemies	[{:hp 6 :atk 0.5 :name :enemy3}
+			 {:hp 1 :atk 3 :name :enemy4}]
+
+:spawns		{:type :probabilities :probabilities [0.2 0.2]}
+
+:tile-types [{:type :battle}
+             {:type :invalid}
+             {:type :none}
+             {:type :move-to :target :player :x 1 :y 2}
+             {:type :portal :file :game_map1 :x 13 :y 7}
+             {:type :replace :target :self :data 6}
+             {:type :replace :target :self :data 5}]
+
+:tiles		[[1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+ 			 [1 0 0 0 0 0 0 0 0 0 0 0 0 0 1]
+ 			 [4 2 2 0 0 0 0 0 0 0 5 0 5 0 1]
+ 			 [1 0 2 2 0 0 0 0 0 0 0 0 0 0 1]
+ 			 [1 1 1 2 2 2 2 2 0 0 5 0 5 0 1]
+ 			 [1 1 1 1 1 1 0 2 0 0 0 0 0 0 1]
+ 			 [1 0 0 0 0 0 0 2 0 0 0 0 0 0 1]
+			 [1 0 0 0 0 0 0 2 2 2 2 2 2 0 1]
+			 [1 0 0 0 0 0 0 0 0 1 1 0 0 0 1]
+			 [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]]
+}
