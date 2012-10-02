@@ -37,8 +37,7 @@
   ([^Graphics2D g game-map player] (render-game-map g game-map player 0 0))
   ([^Graphics2D g game-map player offx offy]
     (.clearRect g 0 0 500 500)
-    (.drawString g (str "Hp: " (get-in player [:stats :hp])) 100 100)
-    (.drawString g (str "Kills: " (player :kills)) 100 120)
+    (.drawString g (str player) 100 100)
     (doseq [y (range (count game-map))]
       (doseq [x (range (count (game-map 0)))]
         (render-tile g (get-in game-map [y x]) 
@@ -57,14 +56,13 @@
   
 (defn render-stats [^Graphics2D g stats x y]
   (doto ^Graphics2D g
-    (.drawString (str (stats :name)) (int x) (int y))
-    (.drawString (str (stats :hp)) (int x) (int (+ y 20)))))
+    (.drawString (str stats) (int x) (int y))))
 
 (defn render-battle [^Graphics2D g player enemy]
   (doto g
     (.clearRect 0 0 500 500)
     (render-stats (player :stats) 100 100)
-    (render-stats enemy 300 100)))
+    (render-stats enemy 100 150)))
 
 (defn render [^Graphics2D g state game-map player enemy]
   (condp = state

@@ -1,14 +1,16 @@
-(ns Test.game)
+(ns Test.game
+  (:require [Test.io :as io]))
 
 (defn type-dispatch [x] (x :type))
 (defn target-dispatch [x] (x :target))
 
+(defmulti tile-action! (fn [params tile instance] (tile :type)))
 
 (defn make-player []
-  (read-string (slurp "resources/save1.txt")))
+  (io/load-resource :save1))
 
 (defn save-player [params]
-  (spit "resources/save1.txt" (str @(params :player))))
+  (io/save-resource :save1 @(params :player)))
 
 (defmulti make-enemy (fn [table spawns] (type-dispatch spawns)))
 
@@ -22,14 +24,20 @@
           (enemies index)
           (recur (- place probability) (inc index)))))))
 
-(defn init-world! [params]
+(defn load-map! [params file]
   (dosync
-    (let [file1 (read-string (slurp "resources/game_map1.txt"))]
+    (let [file1 (io/load-resource file)]
+      (commute (params :player) assoc :map file)
       (ref-set (params :tile-types) (file1 :tile-types))
       (ref-set (params :game-map) (file1 :tiles))
       (ref-set (params :enemies) (file1 :enemies))
-      (ref-set (params :spawns) (file1 :spawns))
-      (ref-set (params :player) (make-player))
+      (ref-set (params :spawns) (file1 :spawns)))))
+
+(defn init-world! [params]
+  (let [player (make-player)]
+    (dosync
+      (ref-set (params :player) player)
+      (load-map! params (player :map))
       (ref-set (params :state) :world))))
 
 (defn clear! [params]
@@ -61,15 +69,8 @@
 (defn move-to [player x y]
   (assoc-in (assoc-in player [:position :x] x) [:position :y] y))
 
-(def tiles [{:type :battle}
-            {:type :invalid}
-            {:type :none}
-            {:type :move-to :target :player :x 1 :y 2}
-            {:type :move-to :target :player :x 13 :y 7}
-            {:type :replace :target :self :data 6}
-            {:type :replace :target :self :data 5}])
-
-(defmulti tile-action! (fn [params tile instance] (tile :type)))
+(defn do-tile! [params x y]
+  (tile-action! params (@(params :tile-types) (or (get-in @(params :game-map) [y x]) 1)) {:x x :y y}))
 
 (defmethod tile-action! :none [params tile instance]
   )
@@ -88,7 +89,16 @@
     (let [target (params :player)
           x (or (tile :x) (instance :x)) 
           y (or (tile :y) (instance :y))]
-      (alter target move-to x y))))
+      (alter target move-to x y)
+      (do-tile! params x y))))
+
+(defmethod tile-action! :portal [params tile instance]
+  (dosync 
+    (let [target (params :player)
+          x (or (tile :x) (instance :x)) 
+          y (or (tile :y) (instance :y))]
+      (commute target move-to x y)
+      (load-map! params (tile :file)))))
 
 
 (defn change-tile! [params replacement-tile x y]
@@ -99,9 +109,6 @@
   (condp = (tile :target)
     :self (change-tile! params (tile :data) (instance :x) (instance :y))
     nil))
-
-(defn do-tile! [params x y]
-  (tile-action! params (@(params :tile-types) (or (get-in @(params :game-map) [y x]) 1)) {:x x :y y}))
 
 (defn try-move! [params dx dy]
   (dosync

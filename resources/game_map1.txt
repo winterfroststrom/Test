@@ -7,8 +7,8 @@
 :tile-types [{:type :battle}
              {:type :invalid}
              {:type :none}
-             {:type :move-to :target :player :x 1 :y 2}
-             {:type :move-to :target :player :x 13 :y 7}
+             {:type :portal :file :game_map2 :x 1 :y 2}
+             {:type :move-to :target :player :x 12 :y 2}
              {:type :replace :target :self :data 6}
              {:type :replace :target :self :data 5}]
 
