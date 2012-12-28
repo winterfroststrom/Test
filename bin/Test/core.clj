@@ -68,44 +68,6 @@
 (comment
   (-main)
   
-  (spit "resources/blubber.txt" "test")
-  (let [directory (new java.io.File "resources")]
-    (if (.exists directory)
-      (spit "resources/blubber.txt" (str @game-map))
-      (do (.mkdirs directory)
-        (spit "resources/game_map1.txt" (str @game-map)))))
-  
-  (read-string (slurp "resources/blubber.txt"))
-  (slurp "resources/game_map1.txt")
-  (read-string (str '(fn a [] (println "a"))))
-  (doc with-out-str)
-  ((fn remove-directory [^java.io.File directory]
-    (let [prefix (.getName directory)]
-      (do (doseq [file-name (.list directory)]
-        (let [file (new java.io.File (str prefix "/" file-name))]
-          (if (.isDirectory file) 
-            (remove-directory file)
-            (.delete file))))
-        (.delete directory))))
-    (new java.io.File "resources"))
-  
-  (def content "(ns user) (defn foo [a b] (str a \" \" b))")
-  (map eval (read-string (str \( content \))))
-  (user/foo 2 3)
-  (ns-unmap *ns* 'content)
-  (remove-ns 'user)
-  
-  (.delete (new java.io.File "resources/blubber.txt"))
-  
-  (.isDirectory (new java.io.File "resources"))
-  (str (.getName (new java.io.File "resources")) "/" "blubber.txt")
-  
-  (.delete (new java.io.File "resources"))
-
-(meta (eval (read-string (let [a (with-meta { :e 2} {:type 3})]
-  (str "(with-meta " (str a) (str (meta a)) ")")))))
-
-  
   (reset! @running true)
   
   (reset! @running false)
