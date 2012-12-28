@@ -13,46 +13,51 @@
     (.setColor Color/RED)
     (.drawString "Alter" 230 100)))
 
-(defn render-tile-rect [^Graphics2D g tile x y color]
+(defn render-tile-rect [^Graphics2D g x y color]
   (doto g
     (.setColor color)
     (.fillRect x y (tile-dimensions :x) (tile-dimensions :y))))
 
-(defn render-tile [^Graphics2D g tile x y]
-  (condp = tile
-    -1 (render-tile-rect g tile x y Color/BLUE)
-    0 (render-tile-rect g tile x y Color/GREEN)
-    1 (render-tile-rect g tile x y Color/GRAY)
-    2 (render-tile-rect g tile x y Color/YELLOW)
-    3 (render-tile-rect g tile x y Color/ORANGE)
-    4 (render-tile-rect g tile x y Color/ORANGE)
-    5 (render-tile-rect g tile x y Color/BLACK)
-    6 (render-tile-rect g tile x y Color/WHITE)
-    nil))
+(defmulti do-render-tile (fn [^Graphics2D g x y tile-render] (get-in tile-render [:type])))
+
+(defmethod do-render-tile :color [^Graphics2D g x y tile-render]
+  (condp = (get-in tile-render [:color])
+    :green (render-tile-rect g x y Color/GREEN)
+    :blue (render-tile-rect g x y Color/BLUE)
+    :grey (render-tile-rect g x y Color/GRAY)
+    :yellow (render-tile-rect g x y Color/YELLOW)
+    :orange (render-tile-rect g x y Color/ORANGE)
+    :black (render-tile-rect g x y Color/BLACK)
+    :white (render-tile-rect g x y Color/WHITE)
+    (render-tile-rect g x y Color/BLUE)))
+
+(defmethod do-render-tile :default [^Graphics2D g x y tile-render]
+  (render-tile-rect g x y Color/BLUE))
 
 (defn tile-position [pos keyword offset]
   (+ (* pos (tile-dimensions keyword)) offset))
 
 (defn render-game-map
-  ([^Graphics2D g game-map player] (render-game-map g game-map player 0 0))
-  ([^Graphics2D g game-map player offx offy]
+  ([^Graphics2D g game-map player tile-renders] 
+    (render-game-map g game-map player 0 0 tile-renders))
+  ([^Graphics2D g game-map player offx offy tile-renders]
     (.clearRect g 0 0 500 500)
     (.drawString g (str player) 100 100)
     (doseq [y (range (count game-map))]
       (doseq [x (range (count (game-map 0)))]
-        (render-tile g (get-in game-map [y x]) 
-                     (tile-position x :x offx)
-                     (tile-position y :y offy))))))
+        (let [tile (get-in game-map [y x])]
+          (do-render-tile g
+                       (tile-position x :x offx)
+                       (tile-position y :y offy)
+                       (tile-renders tile)))))))
 
-(defn render-world [^Graphics2D g game-map player]
+(defn render-world [^Graphics2D g game-map player tile-renders]
   (let [offx 170 offy 170
         px (get-in player [:position :x])
         py (get-in player [:position :y])]
     (doto g
-      (render-game-map game-map player offx offy)
-      (render-tile -1 
-                   (tile-position px :x offx)
-                   (tile-position py :y offy)))))
+      (render-game-map game-map player offx offy tile-renders)
+      (do-render-tile (tile-position px :x offx) (tile-position py :y offy) nil))))
   
 (defn render-stats [^Graphics2D g stats x y]
   (doto ^Graphics2D g
@@ -64,8 +69,8 @@
     (render-stats (player :stats) 100 100)
     (render-stats enemy 100 150)))
 
-(defn render [^Graphics2D g state game-map player enemy]
+(defn render [^Graphics2D g state game-map player enemy tile-renders battle-state]
   (condp = state
     :start (render-start g)
-    :world (render-world g game-map player)
+    :world (render-world g game-map player tile-renders)
     :battle (render-battle g player enemy)))

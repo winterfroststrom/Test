@@ -6,12 +6,12 @@
 
 (defn input-start [params]
   (condp = (params :event)
-    KeyEvent/VK_SPACE (game/init-world! params)
+    KeyEvent/VK_SPACE (game/init-game! params)
     nil))
 
 (defn input-world [params]
   (condp = (params :event) 
-    KeyEvent/VK_SPACE (game/init-battle! params)
+    KeyEvent/VK_SPACE nil;(game/init-battle! params)
     KeyEvent/VK_S (game/save-player params)
     KeyEvent/VK_UP (game/try-move! params 0 -1)
     KeyEvent/VK_DOWN (game/try-move! params 0 1)
@@ -21,9 +21,9 @@
 
 (defn input-battle [params]
   (condp = (params :event)
-    KeyEvent/VK_SPACE (game/clear! params)
-    KeyEvent/VK_A (dosync (game/do-turn! params) (game/try-victory! params))
-    KeyEvent/VK_S (dosync (game/enemy-attack! params) (game/try-victory! params))
+    KeyEvent/VK_SPACE nil;(game/clear! params)
+    KeyEvent/VK_A (game/do-turn! params)
+    KeyEvent/VK_S nil;(game/do-turn! params)
     nil))
 
 (defn input [params]

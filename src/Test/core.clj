@@ -2,9 +2,8 @@
   (:import [javax.swing JFrame JPanel SwingUtilities]
            [java.awt Dimension Color Graphics Graphics2D]
            [java.awt.event KeyAdapter KeyEvent])
-  (:use [Test.render]
-        [Test.input]
-        [Test.game])
+  (:use [Test.render :only [render]]
+        [Test.input :only [input]])
   (:gen-class :main true))
 
 (set! *warn-on-reflection* true)
@@ -24,10 +23,12 @@
 (def game-map (ref nil))
 (def enemies (ref nil))
 (def spawns (ref nil))
+(def tile-renders (ref nil))
+(def battle-state (ref nil))
 
 (defn create-panel []
   (doto (proxy [JPanel] []
-          (paint [^Graphics2D g] (render ^Graphics2D g @state @game-map @player @enemy)))
+          (paint [^Graphics2D g] (render ^Graphics2D g @state @game-map @player @enemy @tile-renders @battle-state)))
     (.setPreferredSize (new Dimension 500 500))))
 
 (defn create-key-adapter []
@@ -40,7 +41,9 @@
                          :enemy enemy
                          :enemies enemies
                          :tile-types tile-types
-                         :spawns spawns}))))
+                         :tile-renders tile-renders
+                         :spawns spawns
+                         :battle-state battle-state}))))
 
 (defn create-frame []
   (doto (new JFrame) 

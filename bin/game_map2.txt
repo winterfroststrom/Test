@@ -4,6 +4,14 @@
 
 :spawns		{:type :probabilities :probabilities [0.2 0.2]}
 
+:tile-renders	[{:type :color :color :green}
+				 {:type :color :color :grey}
+				 {:type :color :color :green}
+				 {:type :color :color :orange}
+				 {:type :color :color :orange}
+				 {:type :color :color :white}
+				 {:type :color :color :black}]
+
 :tile-types [{:type :battle}
              {:type :invalid}
              {:type :none}

@@ -1,25 +1,33 @@
 {
-:enemies	[{:hp 2 :atk 1 :name :enemy1}
-			 {:hp 4 :atk 1 :name :enemy2}]
+:enemies		[{:hp 2 :atk 1 :name :enemy1}
+			 	 {:hp 4 :atk 1 :name :enemy2}]
 
-:spawns		{:type :probabilities :probabilities [0.8 0.2]}
+:spawns			{:type :probabilities :probabilities [0.8 0.2]}
 
-:tile-types [{:type :battle}
-             {:type :invalid}
-             {:type :none}
-             {:type :portal :file :game_map2 :x 1 :y 2}
-             {:type :move-to :target :player :x 12 :y 2}
-             {:type :replace :target :self :data 6}
-             {:type :replace :target :self :data 5}]
+:tile-renders	[{:type :color :color :green}
+				 {:type :color :color :grey}
+				 {:type :color :color :green}
+				 {:type :color :color :orange}
+				 {:type :color :color :orange}
+				 {:type :color :color :white}
+				 {:type :color :color :black}]
 
-:tiles		[[1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
- 			 [1 0 0 0 1 1 0 0 0 1 1 0 0 0 1]
- 			 [4 2 2 0 1 1 0 0 0 1 1 0 5 0 1]
- 			 [1 0 2 2 1 1 0 0 0 1 1 0 0 0 1]
- 			 [1 1 1 2 2 2 2 2 0 1 1 0 0 0 1]
- 			 [1 1 1 1 1 1 0 2 0 1 1 0 0 0 1]
- 			 [1 0 0 0 1 1 0 2 0 1 1 0 0 0 1]
-			 [1 0 0 0 1 1 0 2 2 2 2 2 2 2 3]
-			 [1 0 0 0 0 0 0 0 0 1 1 0 0 0 1]
-			 [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]]
+:tile-types		[{:type :battle}
+             	 {:type :invalid}
+	             {:type :none}
+	             {:type :portal :file :game_map2 :x 1 :y 2}
+	             {:type :move-to :target :player :x 12 :y 2}
+	             {:type :replace :target :self :data 6}
+	             {:type :replace :target :self :data 5}]
+
+:tiles			[[1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+	 			 [1 0 0 0 1 1 0 0 0 1 1 0 0 0 1]
+ 	 		 	 [4 2 2 0 1 1 0 0 0 1 1 0 5 0 1]
+ 			 	 [1 0 2 2 1 1 0 0 0 1 1 0 0 0 1]
+				 [1 1 1 2 2 2 2 2 0 1 1 0 0 0 1]
+	 			 [1 1 1 1 1 1 0 2 0 1 1 0 0 0 1]
+	 			 [1 0 0 0 1 1 0 2 0 1 1 0 0 0 1]
+				 [1 0 0 0 1 1 0 2 2 2 2 2 2 2 3]
+				 [1 0 0 0 0 0 0 0 0 1 1 0 0 0 1]
+				 [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]]
 }
