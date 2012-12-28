@@ -1,15 +1,17 @@
-# alter
+# Test
 
-I'm an app. Or maybe I'm a library? I haven't decided yet. 
+A simple RPG game demo.
 
-The choice is up to you!
+This probably isn't the best way to structure a game with a lisp language, but rpg has a slightly customizable monsters and encounters. There is also an okay tile event system in place.
 
 ## Usage
 
-FIXME
+To run, just do lein uberjar. Make sure the resources folder is in the same directory.
+
+Feel free to use any part of my code in this for whatever.
 
 ## License
 
-Copyright © 2012 FIXME
+Copyright © 2012 
 
 Distributed under the Eclipse Public License, the same as Clojure.
